@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1.05 Rollover Progress</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --panel: #1e1e1e;
+      --accent: #00bcd4;
+      --muted: #888;
+      --text: #f1f1f1;
+    }
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .app {
+      max-width: 740px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      align-items: center;
+    }
+    button {
+      background: var(--accent);
+      border: 0;
+      color: #121212;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .pdf-page {
+      background: var(--panel);
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 8px 6px;
+      border-bottom: 1px solid #333;
+      text-align: left;
+    }
+    th {
+      background: var(--accent);
+      color: #121212;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    input[type="checkbox"] {
+      transform: scale(1.15);
+      accent-color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>1.05 Rollover</h1>
+
+    <div class="controls">
+      <button id="downloadBtn">Download PDF</button>
+    </div>
+
+    <div id="pagesContainer"></div>
+  </div>
+
+  <!-- html2pdf -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+    const totalDays = 160;
+    const startAmount = 1000;
+    const rate = 1.05;
+    const perPage = 7;
+    const container = document.getElementById("pagesContainer");
+
+    let current = startAmount;
+    for (let i = 0; i < totalDays; i++) {
+      if (i % perPage === 0) {
+        var page = document.createElement("div");
+        page.className = "pdf-page";
+        var table = document.createElement("table");
+        table.innerHTML = `
+          <thead>
+            <tr><th>Day</th><th>Played</th><th>Note</th></tr>
+          </thead>
+          <tbody></tbody>`;
+        page.appendChild(table);
+        container.appendChild(page);
+        var tbody = table.querySelector("tbody");
+      }
+      const next = current * rate;
+      const note = `${current.toFixed(2)} × 1.05 = ${next.toFixed(2)}`;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>Day ${i + 1} - ${days[i % 7]}</td>
+        <td style="text-align:center"><input type="checkbox"></td>
+        <td>${note}</td>`;
+      tbody.appendChild(tr);
+      current = next;
+    }
+
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      const opt = {
+        margin: 0.4,
+        filename: "1.05_rollover_progress.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+      };
+      html2pdf().set(opt).from(container).save();
+    });
+  </script>
+</body>
+</html>
