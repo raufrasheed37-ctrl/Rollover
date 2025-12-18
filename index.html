@@ -91,12 +91,12 @@
   </div>
 
 <audio id="bgMusic" loop>
-  <source src="https://music.apple.com/ng/song/te-conoc%C3%AD-bxkq-remix-ultra-slowed/1847998365" type="audio/mpeg">
+  <source src="Zlatan-ft-Asake-Bust-Down-(TunezJam.com).mp3" type="audio/mpeg">
 </audio>
 
   <script>
     const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-    const totalDays = 500;
+    const totalDays = 1000;
     const startAmount = 1000;
     const rate = 1.02;
     const perPage = 7;
@@ -120,7 +120,8 @@
         var tbody = table.querySelector("tbody");
       }
       const next = current * rate;
-      const note = `${current.toFixed(2)} × 1.02 = ${next.toFixed(2)}`;
+      const formatter = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 });
+      const note = `${formatter.format(current)} × ${rate} = ${formatter.format(next)}`;
       const tr = document.createElement("tr");
 
       const cbId = `cb-${i}`;
