@@ -165,22 +165,26 @@
       .then(() => console.log("Service Worker Registered"));
   }
 
-  const music = document.getElementById("bgMusic");
+  
+const music = document.getElementById("bgMusic");
 
-function startMusic() {
+// Try autoplay
+window.addEventListener("load", () => {
+  music.play().catch(() => {
+    // Autoplay blocked → wait for first user click
+    document.body.addEventListener("click", enableMusic, { once: true });
+  });
+});
+
+function enableMusic() {
   music.play();
   localStorage.setItem("musicAllowed", "true");
 }
 
-// Auto-play if already allowed
-window.addEventListener("load", () => {
-  if (localStorage.getItem("musicAllowed") === "true") {
-    music.play();
-  } else {
-    // First-time interaction
-    document.body.addEventListener("click", startMusic, { once: true });
-  }
-});
+// Auto-play on future visits
+if (localStorage.getItem("musicAllowed") === "true") {
+  window.addEventListener("load", () => music.play());
+}
 
   </script>
 </body>
