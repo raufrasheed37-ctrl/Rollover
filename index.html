@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>1.05 Rollover Tracker</title>
+  <title>1.02 Rollover Tracker</title>
   <style>
     :root {
       --bg: #121212;
@@ -84,17 +84,21 @@
   <div class="app">
     <h1>1.05 Rollover</h1>
     <div class="controls">
-      <div class="progress" id="progressText">✓ 0 of 160 completed</div>
+      <div class="progress" id="progressText">✓ 0 of 500 completed</div>
       <button id="resetBtn">Reset All</button>
     </div>
     <div id="pagesContainer"></div>
   </div>
 
+<audio id="bgMusic" loop>
+  <source src="TE_CONOCÍ_KLICKAUD.mp3" type="audio/mpeg">
+</audio>
+
   <script>
     const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-    const totalDays = 160;
+    const totalDays = 500;
     const startAmount = 1000;
-    const rate = 1.05;
+    const rate = 1.02;
     const perPage = 7;
     const container = document.getElementById("pagesContainer");
     const progressText = document.getElementById("progressText");
@@ -116,7 +120,7 @@
         var tbody = table.querySelector("tbody");
       }
       const next = current * rate;
-      const note = `${current.toFixed(2)} × 1.05 = ${next.toFixed(2)}`;
+      const note = `${current.toFixed(2)} × 1.02 = ${next.toFixed(2)}`;
       const tr = document.createElement("tr");
 
       const cbId = `cb-${i}`;
@@ -154,6 +158,29 @@
 
     // Initial progress
     updateProgress();
+
+    if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+      .then(() => console.log("Service Worker Registered"));
+  }
+
+  const music = document.getElementById("bgMusic");
+
+function startMusic() {
+  music.play();
+  localStorage.setItem("musicAllowed", "true");
+}
+
+// Auto-play if already allowed
+window.addEventListener("load", () => {
+  if (localStorage.getItem("musicAllowed") === "true") {
+    music.play();
+  } else {
+    // First-time interaction
+    document.body.addEventListener("click", startMusic, { once: true });
+  }
+});
+
   </script>
 </body>
 </html>
